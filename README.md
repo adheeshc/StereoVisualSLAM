@@ -20,6 +20,11 @@ This SLAM consists of a frontend of optical flow tracking and a backend of slidi
 ## Build
 
 ```
+mkdir lib
+```
+Update dataset path in config/default.yaml
+
+```
 mkdir -p build 
 cd build
 cmake ..
