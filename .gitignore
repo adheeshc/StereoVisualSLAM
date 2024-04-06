@@ -39,3 +39,7 @@ build/*
 !build/build.xml
 **/.build
 **/build
+
+bin/*
+!bin/CMakeLists.txt
+!bin/*.cpp
