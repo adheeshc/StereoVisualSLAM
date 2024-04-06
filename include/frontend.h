@@ -13,7 +13,8 @@ class Viewer;
 enum class FrontEndStatus { INITIALIZE,
                             TRACKING_GOOD,
                             TRACKING_BAD,
-                            TRACKING_LOST };
+                            TRACKING_LOST,
+                            TESTING };
 
 // Estimate the current frame Pose, add keyframes to the map and trigger optimization when the keyframe conditions are met.
 class Frontend {

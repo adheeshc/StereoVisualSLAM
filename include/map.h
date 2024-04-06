@@ -37,7 +37,7 @@ private:
     Frame::Ptr _currentFrame = nullptr;
 
     //settings
-    int _numActiveKeyFrames = 7;
+    unsigned long _numActiveKeyFrames = 7;
 };
 
 #endif  // MAP_H
