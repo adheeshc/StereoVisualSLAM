@@ -25,19 +25,21 @@ This SLAM consists of a frontend of optical flow tracking and a backend of slidi
 
 ## Dependancies
 
-- [Eigen](https://github.com/libigl/eigen) : Eigen is a C++ template library for linear algebra.
+- [Eigen](https://github.com/libigl/eigen) : Eigen is a C++ template library for linear algebra
 
-- [OpenCV](https://github.com/opencv/opencv) : OpenCV is an C++ library for Image Manipulation.
+- [OpenCV](https://github.com/opencv/opencv) : OpenCV is an C++ library for Image Manipulation
 
-- [Sophus](https://github.com/strasdat/Sophus) : Sophus is an open-source C++ framework for Lie groups commonly used for 2D and 3D geometric problems. 
+- [Sophus](https://github.com/strasdat/Sophus) : Sophus is an open-source C++ framework for Lie groups commonly used for 2D and 3D geometric problems
 
-- [g2o](https://github.com/RainerKuemmerle/g2o) : g2o is an open-source C++ library for optimizing graph-based nonlinear error functions.
+- [g2o](https://github.com/RainerKuemmerle/g2o) : g2o is an open-source C++ library for optimizing graph-based nonlinear error functions
 
 - [Glog](https://github.com/google/glog) : C++ implementation of the Google logging module
 
 - [Gflags](https://github.com/gflags/gflags) : The gflags package contains a C++ library that implements command line flags processing
 
 - [Gtest](https://github.com/google/googletest) : Google Testing and Mocking Framework
+
+- [Pangolin](https://github.com/stevenlovegrove/Pangolin) : Pangolin is a lightweight portable rapid development library for managing OpenGL display / interaction
 
 ## Build
 
