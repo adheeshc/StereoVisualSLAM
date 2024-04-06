@@ -16,3 +16,13 @@ This SLAM consists of a frontend of optical flow tracking and a backend of slidi
 
 - Get the kitti dataset here - https://www.cvlibs.net/datasets/kitti/eval_odometry.php
 - Change config/default.yaml to add video sequence
+
+## Build
+
+```
+mkdir -p build 
+cd build
+cmake ..
+make
+./runKittiStereo
+```
