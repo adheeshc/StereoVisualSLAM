@@ -5,7 +5,7 @@ This SLAM consists of a frontend of optical flow tracking and a backend of slidi
 
 ## Framework
 1. <i> bin </i> stores the compiled binary file
-2. <i>include/myslam</i>  stores the header files of the SLAM module.
+2. <i>include</i>  stores the header files of the SLAM module.
 3. <i>src</i> stores the source code files, mainly .cpp files.
 4. <i>test</i> stores the files used for testing, which are also .cpp files.
 5. <i>config</i> stores the configuration files.
