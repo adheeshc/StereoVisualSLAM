@@ -13,14 +13,29 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
+# opencv
 find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+# eigen3
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+include_directories(${EIGEN_INCLUDE_DIR})
+
+# sophus
 find_package(Sophus REQUIRED)
+include_directories(${Sophus_INCLUDE_DIRS})
 
+# ceres solver
 find_package(Ceres REQUIRED)
+include_directories(${CERES_INCLUDE_DIRS})
 
+# g2o
 find_package(g2o REQUIRED)
 include_directories(${G2O_INCLUDE_DIRS})
+
+# pangolin
+find_package(Pangolin REQUIRED)
+include_directories(${Pangolin_INCLUDE_DIRS})
 
 # gtest
 find_package(GTest REQUIRED)
@@ -58,25 +73,11 @@ add_subdirectory(src)
 # add_subdirectory(test)
 add_subdirectory(bin)
 
-
-
-# include_directories(${OpenCV_INCLUDE_DIRS})
-# include_directories(${EIGEN_INCLUDE_DIR})
-# include_directories(${Sophus_INCLUDE_DIRS})
-# include_directories(${CERES_INCLUDE_DIRS})
-
 # include_directories(${PCL_INCLUDE_DIRS})
 # include_directories(${OCTOMAP_INCLUDE_DIRS})
 
 # link_directories(${PCL_LIBRARY_DIRS})
 # add_definitions(${PCL_DEFINITIONS})
-
-# set(source_files
-#     src/main.cpp
-# )
-
-# add_executable(execName ${source_files})
-
 
 # Suppress Warnings
 # if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
