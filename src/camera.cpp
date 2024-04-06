@@ -20,7 +20,7 @@ mySlam::Vec3 Camera::world2Camera(const mySlam::Vec3& pw, const SE3& TCW) {
     return _pose * TCW * pw;
 }
 mySlam::Vec3 Camera::camera2World(const mySlam::Vec3& pc, const SE3& TCW) {
-    TCW.inverse() * _poseInv* pc;
+    return TCW.inverse() * _poseInv* pc;
 }
 
 mySlam::Vec2 Camera::camera2Pixel(const mySlam::Vec3& pc) {
@@ -28,14 +28,15 @@ mySlam::Vec2 Camera::camera2Pixel(const mySlam::Vec3& pc) {
         _fx * pc(0, 0) / pc(2, 0) + _cx,
         _fy * pc(1, 0) / pc(2, 0) * _cy);
 }
-mySlam::Vec3 Camera::pixel2Camera(const mySlam::Vec2& pp, double depth = 1) {
+
+mySlam::Vec3 Camera::pixel2Camera(const mySlam::Vec2& pp, double depth) {
     return mySlam::Vec3(
         (pp(0, 0) - _cx) * depth / _fx,
         (pp(1, 0) - _cy) * depth / _fy,
         depth);
 }
 
-mySlam::Vec3 Camera::pixel2World(const mySlam::Vec2& pp, const SE3& TCW, double depth = 1) {
+mySlam::Vec3 Camera::pixel2World(const mySlam::Vec2& pp, const SE3& TCW, double depth) {
     return camera2World(pixel2Camera(pp, depth), TCW);
 }
 

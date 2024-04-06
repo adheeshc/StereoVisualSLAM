@@ -1,5 +1,12 @@
 #include "config.h"
 
+Config::Config() {}
+
+Config::~Config() {
+    if (_file.isOpened())
+        _file.release();
+}
+
 bool Config::setParameterFile(const std::string& filename) {
     if (_config == nullptr)
         _config = std::shared_ptr<Config>(new Config);
@@ -11,11 +18,6 @@ bool Config::setParameterFile(const std::string& filename) {
         return false;
     }
     return true;
-}
-
-Config::~Config() {
-    if (_file.isOpened())
-        _file.release();
 }
 
 std::shared_ptr<Config> Config::_config = nullptr;
