@@ -18,9 +18,15 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 namespace mySlam {
+    // Vectors
     typedef Eigen::Matrix<double, 2, 1> Vec2;
     typedef Eigen::Matrix<double, 3, 1> Vec3;
+    typedef Eigen::Matrix<double, Eigen::Dynamic, 1> VecX;
+
+    // Matrix
     typedef Eigen::Matrix<double, 3, 3> Mat33;
+    typedef Eigen::Matrix<double, 3, 4> Mat34;
+    typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> MatXX;
 };
 
 // Sophus
