@@ -77,7 +77,7 @@ void Map::removeOldKeyFrame() {
 
     LOG(INFO) << "removed keyframe: " << frameToRemove->_keyframeID;
     _activeKeyFrames.erase(frameToRemove->_keyframeID);
-    for (auto feat : frameToRemove->featuresLeft) {
+    for (auto feat : frameToRemove->_featuresLeft) {
         if (feat == nullptr)
             continue;
         auto mp = feat->_mapPoint.lock();
@@ -85,7 +85,7 @@ void Map::removeOldKeyFrame() {
             mp->removeObservations(feat);
         }
     }
-    for (auto feat : frameToRemove->featuresRight) {
+    for (auto feat : frameToRemove->_featuresRight) {
         if (feat == nullptr)
             continue;
         auto mp = feat->_mapPoint.lock();

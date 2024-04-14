@@ -21,9 +21,9 @@ public:
     cv::Mat _leftImg, _rightImg;   // stereo images
 
     // extracted features in left image
-    std::vector<std::shared_ptr<Feature>> featuresLeft;
+    std::vector<std::shared_ptr<Feature>> _featuresLeft;
     // extracted features in right image
-    std::vector<std::shared_ptr<Feature>> featuresRight;
+    std::vector<std::shared_ptr<Feature>> _featuresRight;
 
 public:  // data members
     Frame(){};
