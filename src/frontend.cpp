@@ -8,6 +8,7 @@ TODO:
     2) Frontend::insertKeyFrame() ->  update Backend map + update Viewer map
     3) Frontend::stereoInit() -> add current frame to Viewer + update Viewer map
     4) Frontend::buildInitMap() -> update Backend map
+    5) Frontend::estimateCurrentPose() -> setup g2o
 */
 
 Frontend::Frontend() {
@@ -27,10 +28,10 @@ bool Frontend::addFrame(Frame::Ptr frame) {
     case FrontEndStatus::TRACKING_BAD:
         Track();
         break;
+    case FrontEndStatus::TESTING:
     case FrontEndStatus::TRACKING_LOST:
         Reset();
         break;
-    case FrontEndStatus::TESTING:
     }
 
     _lastFrame = _currentFrame;
@@ -63,7 +64,6 @@ bool Frontend::Track() {
         _currentFrame->setPose(_relativeMotion * _lastFrame->getPose());
     }
 
-    int numTrackLast = trackLastFrame();
     _trackingInliers = estimateCurrentPose();
 
     if (_trackingInliers > _numFeaturesTracking) {
@@ -128,6 +128,8 @@ int Frontend::trackLastFrame() {
 
 int Frontend::estimateCurrentPose() {
     // setup g2o
+    int test = 0;
+    return test;
 }
 
 bool Frontend::insertKeyFrame() {
@@ -155,7 +157,7 @@ bool Frontend::insertKeyFrame() {
 }
 
 bool Frontend::stereoInit() {
-    int numFeaturesLeft = detectFeatures();
+    // int numFeaturesLeft = detectFeatures();
     int numFeaturesRight = findFeaturesInRight();
 
     if (numFeaturesRight < _numFeaturesInit) {
@@ -203,6 +205,28 @@ int Frontend::findFeaturesInRight() {
             kpsRight.emplace_back(kp->_position.pt);
         }
     }
+
+    std::vector<uchar> status;
+    cv::Mat error;
+
+    cv::calcOpticalFlowPyrLK(_lastFrame->_leftImg, _currentFrame->_leftImg, kpsLeft, kpsRight, status, error, cv::Size(11, 11), 3, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 0.01), cv::OPTFLOW_USE_INITIAL_FLOW);
+
+    int numGoodPts = 0;
+
+    for (size_t i = 0; i < status.size(); i++) {
+        if (status[i]) {
+            cv::KeyPoint kp(kpsRight[i], 7);
+            Feature::Ptr feature(new Feature(_currentFrame, kp));
+            feature->_isOnLeftImg = false;
+            _currentFrame->_featuresRight.emplace_back(feature);
+            numGoodPts++;
+        } else {
+            _currentFrame->_featuresRight.emplace_back(nullptr);
+        }
+    }
+
+    LOG(INFO) << "Found " << numGoodPts << " in the right image";
+    return numGoodPts;
 }
 
 bool Frontend::buildInitMap() {
