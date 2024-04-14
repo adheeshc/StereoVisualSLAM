@@ -4,6 +4,7 @@
 #define SLAM_H
 
 #include "backend.h"
+#include "camera.h"
 #include "commonInclude.h"
 #include "dataset.h"
 #include "frontend.h"

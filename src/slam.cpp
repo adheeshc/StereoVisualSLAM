@@ -1,6 +1,12 @@
 #include "slam.h"
 #include "config.h"
 
+/*
+TODO:
+    1) SLAM::Initialize() ->  set backend map, cameras + set viewer map
+    2) SLAM::Run() -> // stop backend and close viewer
+*/
+
 SLAM::SLAM(std::string& configPath)
     : _configFilePath(configPath) {}
 
@@ -8,6 +14,26 @@ bool SLAM::Initialize() {
     // read config file
     if (Config::setParameterFile(_configFilePath) == false)
         return false;
+
+    _dataset = Dataset::Ptr(new Dataset(Config::Get<std::string>("datasetDir")));
+    if (_dataset->init() != true) {
+        LOG(ERROR) << "cannot open dataset";
+    }
+
+    // Create components
+    // _frontend = Frontend::Ptr(new Frontend);
+    // _backend = Backend::Ptr(new Backend);
+    // _map = Map::Ptr(new Map);
+    // _viewer = Viewer::Ptr(new Viewer);
+
+    // _frontend->setBackend(_backend);
+    // _frontend->setMap(_map);
+    // _frontend->setViewer(_viewer);
+    // _frontend->setCameras(_dataset->getCamera(0), _dataset->getCamera(1));
+
+    // set backend map, cameras
+
+    // set viewer map
 
     return true;
 }
@@ -26,10 +52,13 @@ void SLAM::Run() {
 }
 
 bool SLAM::Step() {
-    // get frame from dataset, add new frame to front end, if cant add frame -> return false
+    Frame::Ptr newFrame = _dataset->nextFrame();
+    if (newFrame == nullptr) {
+        return false;
+    }
 
     auto t1 = std::chrono::steady_clock::now();
-    bool success = false;  // add frame here into frontend
+    bool success = _frontend->addFrame(newFrame);
     auto t2 = std::chrono::steady_clock::now();
     auto timeTaken = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
 
@@ -38,7 +67,6 @@ bool SLAM::Step() {
     return success;
 }
 
-FrontEndStatus getFrontEndStatus() {
-    // return front end->status
-    return FrontEndStatus::TESTING;
+FrontEndStatus SLAM::getFrontEndStatus() {
+    return _frontend->getFrontEndStatus();
 }
