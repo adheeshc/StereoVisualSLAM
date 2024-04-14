@@ -20,7 +20,6 @@ public:
     SE3 _poseInv;  // Inverse of extrinsics
 
     Camera();
-    ~Camera();
 
     Camera(double fx, double fy, double cx, double cy, double baseline, const SE3& pose);
 
