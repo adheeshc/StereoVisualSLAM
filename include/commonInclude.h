@@ -5,6 +5,7 @@
 
 // std
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <list>
 #include <memory>
@@ -13,6 +14,9 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+// boost
+#include <boost/format.hpp>
 
 // Eigen
 #include <Eigen/Core>
