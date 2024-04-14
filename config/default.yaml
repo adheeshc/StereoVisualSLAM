@@ -1,7 +1,7 @@
 %YAML:1.0
 
 # KITTI Datset directory
-datasetDir: ../dataset/
+datasetDir: ../dataset/Kitti/sequences/05
 
 # Camera Intrinsics
 camera.fx: 517.3
