@@ -12,11 +12,13 @@ This SLAM consists of a frontend of optical flow tracking and a backend of slidi
 ## Framework
 
 1. <i> bin </i> stores the main file.
-2. <i> include </i> stores the header files of the SLAM module.
-3. <i> src </i> stores the source code files, mainly .cpp files.
-4. <i> test </i> stores the files used for testing.
-5. <i> config </i> stores the configuration files.
-6. <i> cmake_modules </i> saves the cmake files of third-party libraries, which are used by libraries such as g2o.
+2. <i> cmake_modules </i> saves the cmake files of third-party libraries, which are used by libraries such as g2o.
+3. <i> config </i> stores the configuration files.
+4. <i> include </i> stores the header files of the SLAM module.
+5. <i> lib </i> holds the SLAM lib file (created during CMake build)
+6. <i> src </i> stores the source code files.
+7. <i> test </i> stores the files used for testing.
+
 
 ## Dataset
 

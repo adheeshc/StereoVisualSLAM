@@ -40,6 +40,10 @@ build/*
 **/.build
 **/build
 
+#bin
 bin/*
 !bin/CMakeLists.txt
 !bin/*.cpp
+
+#dataset
+dataset/*
