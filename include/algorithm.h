@@ -5,7 +5,7 @@
 
 #include "commonInclude.h"
 
-inline bool triangulation(const std::vector<SE3>& poses, const std::vector<mySlam::Vec3> points, mySlam::Vec3 ptWorld) {
+inline bool triangulation(const std::vector<SE3>& poses, const std::vector<mySlam::Vec3> points, mySlam::Vec3& ptWorld) {
     mySlam::MatXX A(2 * poses.size(), 4);
     mySlam::VecX b(2 * poses.size());
     b.setZero();
