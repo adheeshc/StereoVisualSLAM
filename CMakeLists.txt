@@ -22,6 +22,7 @@ file(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH})
 # opencv
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
+message(STATUS "OpenCV Version:" ${OpenCV_VERSION})
 
 # eigen3
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
