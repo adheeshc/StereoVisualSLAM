@@ -5,12 +5,14 @@
 
 // std
 #include <algorithm>
+#include <condition_variable>
 #include <fstream>
 #include <iostream>
 #include <list>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -29,6 +31,7 @@ namespace mySlam {
     typedef Eigen::Matrix<double, Eigen::Dynamic, 1> VecX;
 
     // Matrix
+    typedef Eigen::Matrix<double, 2, 2> Mat22;
     typedef Eigen::Matrix<double, 3, 3> Mat33;
     typedef Eigen::Matrix<double, 3, 4> Mat34;
     typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> MatXX;
