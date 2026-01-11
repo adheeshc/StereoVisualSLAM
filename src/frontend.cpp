@@ -1,16 +1,9 @@
 #include "frontend.h"
 #include "algorithm.h"
+#include "backend.h"
 #include "config.h"
 #include "g2oTypes.h"
-
-/*
-TODO:
-    1) Frontend::Track() -> add current frame to Viewer
-    2) Frontend::insertKeyFrame() ->  update Backend map + update Viewer map
-    3) Frontend::stereoInit() -> add current frame to Viewer + update Viewer map
-    4) Frontend::buildInitMap() -> update Backend map
-    5) Frontend::estimateCurrentPose() -> setup g2o
-*/
+#include "viewer.h"
 
 Frontend::Frontend() {
     _numFeaturesInit = Config::Get<int>("numFeaturesInit");
@@ -82,7 +75,7 @@ bool Frontend::Track() {
     _relativeMotion = _currentFrame->getPose() * _lastFrame->getPose().inverse();
 
     if (_viewer) {
-        // add current frame
+        _viewer->addCurrentFrame(_currentFrame);
     }
     return true;
 }
@@ -129,7 +122,6 @@ int Frontend::trackLastFrame() {
 }
 
 int Frontend::estimateCurrentPose() {
-    // setup g2o
     typedef g2o::BlockSolver_6_3 BlockSolverType;
     typedef g2o::LinearSolverDense<BlockSolverType::PoseMatrixType> LinearSolverType;
 
@@ -234,9 +226,10 @@ bool Frontend::insertKeyFrame() {
     triangulateNewPoints();
 
     // update backend map
+    _backend->updateMap();
 
     if (_viewer) {
-        // update viewer map
+        _viewer->updateMap();
     }
 
     return true;
@@ -254,8 +247,8 @@ bool Frontend::stereoInit() {
     if (buildMapSuccess) {
         _status = FrontEndStatus::TRACKING_GOOD;
         if (_viewer) {
-            // add current frame
-            // update map
+            _viewer->addCurrentFrame(_currentFrame);
+            _viewer->updateMap();
         }
         return true;
     }
@@ -339,8 +332,7 @@ bool Frontend::buildInitMap() {
     }
     _currentFrame->setKeyframe();
     _map->insertKeyFrame(_currentFrame);
-
-    // update backend map
+    _backend->updateMap();
 
     LOG(INFO) << "Initial map created with " << cntInitLandmarks << " map points";
 

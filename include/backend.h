@@ -16,22 +16,22 @@ public:
 
     Backend();
 
-    void SetCameras(Camera::Ptr left, Camera::Ptr right) {
+    void setCameras(Camera::Ptr left, Camera::Ptr right) {
         _leftCamera = left;
         _rightCamera = right;
     }
 
-    void SetMap(std::shared_ptr<Map> map) {
+    void setMap(std::shared_ptr<Map> map) {
         _map = map;
     }
 
     void updateMap();
-    void Stop();
+    void stop();
 
 private:
-    void BackendLoop();
+    void backendLoop();
 
-    void Optimize(Map::KeyFramesType& keyframes, Map::LandmarksType& landmarks);
+    void optimize(Map::KeyFramesType& keyframes, Map::LandmarksType& landmarks);
 
     std::shared_ptr<Map> _map;
     std::thread _backendThread;

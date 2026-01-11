@@ -1,12 +1,6 @@
 #include "slam.h"
 #include "config.h"
 
-/*
-TODO:
-    1) SLAM::Initialize() ->  set backend map, cameras + set viewer map
-    2) SLAM::Run() -> // stop backend and close viewer
-*/
-
 SLAM::SLAM(std::string& configPath)
     : _configFilePath(configPath) {}
 
@@ -32,9 +26,11 @@ bool SLAM::Initialize() {
     _frontend->setViewer(_viewer);
     _frontend->setCameras(_dataset->getCamera(0), _dataset->getCamera(1));
 
-    // set backend map, cameras
+    _backend->setMap(_map);
+    _backend->setCameras(_dataset->getCamera(0), _dataset->getCamera(1));
 
     // set viewer map
+    _viewer->setMap(_map);
 
     return true;
 }
@@ -47,8 +43,8 @@ void SLAM::Run() {
         }
     }
 
-    // stop backend and close viewer
-
+    _backend->stop();
+    _viewer->close();
     LOG(INFO) << "SLAM stopped!";
 }
 

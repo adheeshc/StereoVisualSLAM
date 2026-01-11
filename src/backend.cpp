@@ -8,7 +8,7 @@
 
 Backend::Backend() {
     _backendRunning.store(true);
-    _backendThread = std::thread(std::bind(&Backend::BackendLoop, this));
+    _backendThread = std::thread(std::bind(&Backend::backendLoop, this));
 }
 
 void Backend::updateMap() {
@@ -16,24 +16,24 @@ void Backend::updateMap() {
     _mapUpdate.notify_one();
 }
 
-void Backend::Stop() {
+void Backend::stop() {
     _backendRunning.store(false);
     _mapUpdate.notify_one();
     _backendThread.join();
 }
 
-void Backend::BackendLoop() {
+void Backend::backendLoop() {
     while (_backendRunning.load()) {
         std::unique_lock<std::mutex> lock(_dataMutex);
         _mapUpdate.wait(lock);
 
         Map::KeyFramesType activeKFS = _map->getActiveKeyFrames();
         Map::LandmarksType activeLandmarks = _map->getActiveMapPoints();
-        Optimize(activeKFS, activeLandmarks);
+        optimize(activeKFS, activeLandmarks);
     }
 }
 
-void Backend::Optimize(Map::KeyFramesType& keyframes,
+void Backend::optimize(Map::KeyFramesType& keyframes,
                        Map::LandmarksType& landmarks) {
     // setup g2o
     typedef g2o::BlockSolver_6_3 BlockSolverType;

@@ -5,6 +5,7 @@
 
 // std
 #include <algorithm>
+#include <atomic>
 #include <condition_variable>
 #include <fstream>
 #include <iostream>

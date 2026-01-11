@@ -9,6 +9,10 @@ set(CMAKE_CXX_FLAGS "-std=c++17 -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 set(CMAKE_CXX_FLAGS_RELEASE  "-std=c++17 -O3 -fopenmp -pthread")
 
+# Exclude anaconda from library search paths
+set(CMAKE_IGNORE_PATH "/home/adheeshc/anaconda3")
+list(APPEND CMAKE_SYSTEM_IGNORE_PATH "/home/adheeshc/anaconda3/lib")
+
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
 # Set output paths
@@ -64,6 +68,7 @@ set(THIRD_PARTY_LIBS
     g2o_core g2o_stuff g2o_types_sba g2o_solver_csparse g2o_csparse_extension
     Ceres::ceres
     ${G2O_CORE_LIBRARY} ${G2O_STUFF_LIBRARY} ${G2O_SOLVER_CSPARSE} ${G2O_TYPES_SLAM2D} ${G2O_TYPES_SLAM3D} ${G2O_TYPES_SBA} ${G2O_CSPARSE_EXTENSION}
+    ffi
 )
 
 if(NOT TARGET glog::glog)
