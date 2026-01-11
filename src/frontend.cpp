@@ -1,6 +1,7 @@
 #include "frontend.h"
 #include "algorithm.h"
 #include "config.h"
+#include "g2oTypes.h"
 
 /*
 TODO:
@@ -64,6 +65,7 @@ bool Frontend::Track() {
         _currentFrame->setPose(_relativeMotion * _lastFrame->getPose());
     }
 
+    int numTrackLast = trackLastFrame();
     _trackingInliers = estimateCurrentPose();
 
     if (_trackingInliers > _numFeaturesTracking) {
@@ -128,8 +130,92 @@ int Frontend::trackLastFrame() {
 
 int Frontend::estimateCurrentPose() {
     // setup g2o
-    int test = 0;
-    return test;
+    typedef g2o::BlockSolver_6_3 BlockSolverType;
+    typedef g2o::LinearSolverDense<BlockSolverType::PoseMatrixType> LinearSolverType;
+
+    auto solver = new g2o::OptimizationAlgorithmLevenberg(
+        g2o::make_unique<BlockSolverType>(
+            g2o::make_unique<LinearSolverType>()));
+
+    g2o::SparseOptimizer optimizer;
+    optimizer.setAlgorithm(solver);
+
+    // vertex
+    mySlam::VertexPose* vertex_pose = new mySlam::VertexPose();  // camera vertex_pose
+    vertex_pose->setId(0);
+    vertex_pose->setEstimate(_currentFrame->getPose());
+    optimizer.addVertex(vertex_pose);
+
+    // intrinsics
+    mySlam::Mat33 K = _leftCamera->getIntrinsics();
+
+    // edges
+    int index = 1;
+    std::vector<mySlam::EdgeProjectionPoseOnly*> edges;
+    std::vector<Feature::Ptr> features;
+    for (size_t i = 0; i < _currentFrame->_featuresLeft.size(); ++i) {
+        auto mp = _currentFrame->_featuresLeft[i]->_mapPoint.lock();
+        if (mp) {
+            features.push_back(_currentFrame->_featuresLeft[i]);
+            mySlam::EdgeProjectionPoseOnly* edge =
+                new mySlam::EdgeProjectionPoseOnly(mp->_pos, K);
+            edge->setId(index);
+            edge->setVertex(0, vertex_pose);
+            edge->setMeasurement(
+                toVec2(_currentFrame->_featuresLeft[i]->_position.pt));
+            edge->setInformation(Eigen::Matrix2d::Identity());
+            edge->setRobustKernel(new g2o::RobustKernelHuber);
+            edges.push_back(edge);
+            optimizer.addEdge(edge);
+            index++;
+        }
+    }
+
+    // Estimate the Pose and determine outliers
+    const double chi2_th = 5.991;
+    int cnt_outlier = 0;
+    for (int iteration = 0; iteration < 4; ++iteration) {
+        vertex_pose->setEstimate(_currentFrame->getPose());
+        optimizer.initializeOptimization();
+        optimizer.optimize(10);
+        cnt_outlier = 0;
+
+        // count outliers
+        for (size_t i = 0; i < edges.size(); ++i) {
+            auto e = edges[i];
+            if (features[i]->_isOutlier) {
+                e->computeError();
+            }
+            if (e->chi2() > chi2_th) {
+                features[i]->_isOutlier = true;
+                e->setLevel(1);
+                cnt_outlier++;
+            } else {
+                features[i]->_isOutlier = false;
+                e->setLevel(0);
+            };
+
+            if (iteration == 2) {
+                e->setRobustKernel(nullptr);
+            }
+        }
+    }
+
+    LOG(INFO) << "Outlier/Inlier in pose estimating: " << cnt_outlier << "/"
+              << features.size() - cnt_outlier;
+    // Set pose and outlier
+    _currentFrame->setPose(vertex_pose->estimate());
+
+    LOG(INFO) << "Current Pose = \n"
+              << _currentFrame->getPose().matrix();
+
+    for (auto& feat : features) {
+        if (feat->_isOutlier) {
+            feat->_mapPoint.reset();
+            feat->_isOutlier = false;  // can be included in future scope
+        }
+    }
+    return features.size() - cnt_outlier;
 }
 
 bool Frontend::insertKeyFrame() {

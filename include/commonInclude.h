@@ -25,6 +25,7 @@ namespace mySlam {
     // Vectors
     typedef Eigen::Matrix<double, 2, 1> Vec2;
     typedef Eigen::Matrix<double, 3, 1> Vec3;
+    typedef Eigen::Matrix<double, 6, 1> Vec6;
     typedef Eigen::Matrix<double, Eigen::Dynamic, 1> VecX;
 
     // Matrix
