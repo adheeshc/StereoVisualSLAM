@@ -1,4 +1,5 @@
 add_library(mySLAM SHARED
+    backend.cpp
     camera.cpp
     config.cpp
     dataset.cpp
@@ -8,6 +9,7 @@ add_library(mySLAM SHARED
     map.cpp
     mapPoint.cpp
     slam.cpp
+    viewer.cpp
     )
 
 target_link_libraries(mySLAM

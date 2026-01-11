@@ -157,7 +157,7 @@ bool Frontend::insertKeyFrame() {
 }
 
 bool Frontend::stereoInit() {
-    // int numFeaturesLeft = detectFeatures();
+    int numFeaturesLeft = detectFeatures();
     int numFeaturesRight = findFeaturesInRight();
 
     if (numFeaturesRight < _numFeaturesInit) {
@@ -209,7 +209,7 @@ int Frontend::findFeaturesInRight() {
     std::vector<uchar> status;
     cv::Mat error;
 
-    cv::calcOpticalFlowPyrLK(_lastFrame->_leftImg, _currentFrame->_leftImg, kpsLeft, kpsRight, status, error, cv::Size(11, 11), 3, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 0.01), cv::OPTFLOW_USE_INITIAL_FLOW);
+    cv::calcOpticalFlowPyrLK(_currentFrame->_leftImg, _currentFrame->_rightImg, kpsLeft, kpsRight, status, error, cv::Size(11, 11), 3, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 0.01), cv::OPTFLOW_USE_INITIAL_FLOW);
 
     int numGoodPts = 0;
 

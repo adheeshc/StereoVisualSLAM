@@ -12,13 +12,13 @@ bool Dataset::init() {
     }
 
     for (int i = 0; i < 4; i++) {
-        char cameraName[3];
+        char cameraName[4];
         for (int j = 0; j < 4; j++) {
             fin >> cameraName[j];
         }
 
         double projectionData[12];
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < 12; j++) {
             fin >> projectionData[j];
         }
 

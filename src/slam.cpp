@@ -18,18 +18,19 @@ bool SLAM::Initialize() {
     _dataset = Dataset::Ptr(new Dataset(Config::Get<std::string>("datasetDir")));
     if (_dataset->init() != true) {
         LOG(ERROR) << "cannot open dataset";
+        return false;
     }
 
     // Create components
-    // _frontend = Frontend::Ptr(new Frontend);
-    // _backend = Backend::Ptr(new Backend);
-    // _map = Map::Ptr(new Map);
-    // _viewer = Viewer::Ptr(new Viewer);
+    _frontend = Frontend::Ptr(new Frontend);
+    _backend = Backend::Ptr(new Backend);
+    _map = Map::Ptr(new Map);
+    _viewer = Viewer::Ptr(new Viewer);
 
-    // _frontend->setBackend(_backend);
-    // _frontend->setMap(_map);
-    // _frontend->setViewer(_viewer);
-    // _frontend->setCameras(_dataset->getCamera(0), _dataset->getCamera(1));
+    _frontend->setBackend(_backend);
+    _frontend->setMap(_map);
+    _frontend->setViewer(_viewer);
+    _frontend->setCameras(_dataset->getCamera(0), _dataset->getCamera(1));
 
     // set backend map, cameras
 
