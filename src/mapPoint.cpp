@@ -25,7 +25,6 @@ void MapPoint::removeObservations(std::shared_ptr<Feature> feature) {
     for (auto iter = _observations.begin(); iter != _observations.end(); iter++) {
         if (iter->lock() == feature) {
             _observations.erase(iter);
-            feature->_mapPoint.reset();
             observedTimes--;
             break;
         }

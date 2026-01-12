@@ -122,6 +122,10 @@ void Backend::optimize(Map::KeyFramesType& keyframes,
         }
     }
 
+    LOG(INFO) << "Backend BA: " << vertices.size() << " keyframes, "
+              << verticesLandmarks.size() << " landmarks, "
+              << edges_and_features.size() << " edges";
+
     optimizer.initializeOptimization();
     optimizer.optimize(10);
 
@@ -138,6 +142,9 @@ void Backend::optimize(Map::KeyFramesType& keyframes,
             }
         }
         double inlierRatio = cntInlier / double(cntInlier + cntOutlier);
+        LOG(INFO) << "Backend iteration " << iteration << ": chi2Th=" << chi2Th
+                  << ", inliers=" << cntInlier << ", outliers=" << cntOutlier
+                  << ", ratio=" << inlierRatio;
         if (inlierRatio > 0.5) {
             break;
         } else {

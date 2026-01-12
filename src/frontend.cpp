@@ -92,8 +92,17 @@ int Frontend::trackLastFrame() {
         if (kp->_mapPoint.lock()) {
             auto mp = kp->_mapPoint.lock();
             auto px = _leftCamera->world2Pixel(mp->_pos, _currentFrame->getPose());
-            kpsLast.emplace_back(kp->_position.pt);
-            kpsCurrent.emplace_back(cv::Point2f(px[0], px[1]));
+
+            // Validate projected point is within image bounds
+            if (px[0] > 0 && px[0] < _currentFrame->_leftImg.cols &&
+                px[1] > 0 && px[1] < _currentFrame->_leftImg.rows) {
+                kpsLast.emplace_back(kp->_position.pt);
+                kpsCurrent.emplace_back(cv::Point2f(px[0], px[1]));
+            } else {
+                // Projection is invalid, use original position as guess
+                kpsLast.emplace_back(kp->_position.pt);
+                kpsCurrent.emplace_back(kp->_position.pt);
+            }
         } else {
             kpsLast.emplace_back(kp->_position.pt);
             kpsCurrent.emplace_back(kp->_position.pt);
@@ -164,13 +173,15 @@ int Frontend::estimateCurrentPose() {
     }
 
     // Estimate the Pose and determine outliers
-    const double chi2_th = 5.991;
+    double chi2_th = 5.991;
     int cnt_outlier = 0;
+    int cnt_inlier = 0;
     for (int iteration = 0; iteration < 4; ++iteration) {
         vertex_pose->setEstimate(_currentFrame->getPose());
         optimizer.initializeOptimization();
         optimizer.optimize(10);
         cnt_outlier = 0;
+        cnt_inlier = 0;
 
         // count outliers
         for (size_t i = 0; i < edges.size(); ++i) {
@@ -185,16 +196,25 @@ int Frontend::estimateCurrentPose() {
             } else {
                 features[i]->_isOutlier = false;
                 e->setLevel(0);
+                cnt_inlier++;
             };
 
             if (iteration == 2) {
                 e->setRobustKernel(nullptr);
             }
         }
+
+        // Adaptive threshold: if too many outliers, relax threshold
+        double inlierRatio = cnt_inlier / double(cnt_inlier + cnt_outlier + 1e-6);
+        if (inlierRatio < 0.3 && iteration < 3) {
+            chi2_th *= 1.5;  // Increase threshold if inlier ratio too low
+            LOG(WARNING) << "Frontend pose estimation: low inlier ratio " << inlierRatio
+                         << ", increasing chi2 threshold to " << chi2_th;
+        }
     }
 
     LOG(INFO) << "Outlier/Inlier in pose estimating: " << cnt_outlier << "/"
-              << features.size() - cnt_outlier;
+              << cnt_inlier;
     // Set pose and outlier
     _currentFrame->setPose(vertex_pose->estimate());
 
@@ -207,7 +227,7 @@ int Frontend::estimateCurrentPose() {
             feat->_isOutlier = false;  // can be included in future scope
         }
     }
-    return features.size() - cnt_outlier;
+    return cnt_inlier;
 }
 
 bool Frontend::insertKeyFrame() {

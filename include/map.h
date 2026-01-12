@@ -37,7 +37,7 @@ private:
     Frame::Ptr _currentFrame = nullptr;
 
     //settings
-    unsigned long _numActiveKeyFrames = 7;
+    unsigned long _numActiveKeyFrames = 15;  // Increased from 7 to keep more map points
 };
 
 #endif  // MAP_H
